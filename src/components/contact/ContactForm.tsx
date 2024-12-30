@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -29,14 +29,34 @@ export default function ContactForm() {
     }
   });
 
+  const API_URL = import.meta.env.PROD 
+    ? 'https://addvize-api.up.railway.app/api/contact'  // URL de production
+    : 'http://localhost:3001/api/contact';              // URL de développement
+
   const onSubmit = async (data: ContactFormData) => {
     try {
-      console.log('Form submitted:', data);
-      // Here you would typically send the data to your backend
+      console.log('Submitting form with data:', data);
+      
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log('Form submission result:', result);
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Une erreur est survenue');
+      }
+
       alert('Message envoyé avec succès! Nous vous recontacterons dans les plus brefs délais.');
       methods.reset();
       setCurrentStep(0);
     } catch (error) {
+      console.error('Form submission error:', error);
       alert('Une erreur est survenue. Veuillez réessayer.');
     }
   };

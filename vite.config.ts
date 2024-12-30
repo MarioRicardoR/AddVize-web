@@ -4,6 +4,10 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  envPrefix: 'VITE_',
+  define: {
+    'import.meta.env.VITE_RESEND_API_KEY': JSON.stringify(process.env.VITE_RESEND_API_KEY)
+  },
   optimizeDeps: {
     include: ['three', '@react-three/fiber', '@react-three/drei', 'framer-motion-3d']
   },
